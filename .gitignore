@@ -1,0 +1,19 @@
+npm-debug.log
+node_modules/
+
+############
+# Windows Crap
+############
+
+# Windows image file caches
+Thumbs.db 
+
+# Folder config file
+Desktop.ini
+
+cfg
+
+############
+# Mac crap
+############
+.DS_Store
