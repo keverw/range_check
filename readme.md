@@ -39,3 +39,7 @@ var range_check = require('range_check');
 console.log(range_check.in_range('192.168.1.1', ['10.0.0.0/8', '192.0.0.0/8'])); //returns true
 
 ```
+
+##Dependencies##
+- php.js [http://phpjs.org/](http://phpjs.org/)
+- ipaddr.js [https://github.com/whitequark/ipaddr.js](https://github.com/whitequark/ipaddr.js)
