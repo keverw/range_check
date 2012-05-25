@@ -1,8 +1,12 @@
 # Range Check #
-This is a simple module for to vaildate IP, check version, check if within range.
+This is a simple module to vaildate IP address, check ip address version, check if ip is within a range.
 
 ## Setup ##
-later
+
+To set up Range Check on your Node.js server use npm.
+
+    npm install range_check
+
 
 ##Check if IP is vaild##
 

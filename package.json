@@ -1,0 +1,27 @@
+{
+  "author": "Kevin Whitman (https://github.com/keverw)",
+  "name": "range_check",
+  "description": "This is a simple module to vaildate IP address, check ip address version, check if ip is within a range.",
+  "version": "0.0.1",
+  "keywords": [
+    "IP Address",
+    "CIDR",
+    "V4",
+    "V6",
+    "vaild",
+    "range",
+    "addr",
+    "ip",
+    "ipv4",
+    "ipv6"
+  ],
+  "dependencies": {
+    "ipaddr.js": "0.1.1"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/keverw/range_check"
+    }
+  ]
+}
