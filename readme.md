@@ -41,5 +41,5 @@ console.log(range_check.in_range('192.168.1.1', ['10.0.0.0/8', '192.0.0.0/8']));
 ```
 
 ##Dependencies##
-- php.js [http://phpjs.org/](http://phpjs.org/)
-- ipaddr.js [https://github.com/whitequark/ipaddr.js](https://github.com/whitequark/ipaddr.js)
+- php.js - [http://phpjs.org/](http://phpjs.org/)
+- ipaddr.js - [https://github.com/whitequark/ipaddr.js](https://github.com/whitequark/ipaddr.js)
