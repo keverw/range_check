@@ -1,5 +1,5 @@
 # Range Check #
-This is a simple module to vaildate IP address, check ip address version, check if ip is within a range.
+This is a simple module to validate IP address, check ip address version, check if IP is within a range.
 
 ## Setup ##
 
@@ -8,11 +8,11 @@ To set up Range Check on your Node.js server use npm.
     npm install range_check
 
 
-##Check if IP is vaild##
+##Check if IP is valid##
 
 ```
 var range_check = require('range_check');
-console.log(range_check.vaild_ip('10.0.1.5')); //returns true or false
+console.log(range_check.valid_ip('10.0.1.5')); //returns true or false
 ```
 
 ##Check IP version##
