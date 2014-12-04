@@ -71,9 +71,9 @@
 
     // Export public API
     var range_check = {};
-    range_check.vaild_ip = vaild_ip;
-    range_check.valid_ip = valid_ip;
+    range_check.vaild_ip = range_check.vaildIp = valid_ip;
+    range_check.valid_ip = range_check.validIp = valid_ip;
     range_check.ver = ver;
-    range_check.in_range = in_range;
+    range_check.in_range = range_check.inRange = in_range;
     module.exports = range_check;
 }());
