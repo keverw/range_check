@@ -49,7 +49,7 @@
             }
             else
             {
-                return false;
+                return vaild_ip(range) && addr === range;
             }
         }
         else if (typeof (range) === 'object') //list
