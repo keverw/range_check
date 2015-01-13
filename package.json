@@ -16,7 +16,7 @@
     "ipv6"
   ],
   "dependencies": {
-    "ipaddr.js": "0.1.1"
+    "ipaddr.js": "~0.1.x"
   },
   "repository": {
     "type": "git",
