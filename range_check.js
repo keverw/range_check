@@ -1,7 +1,6 @@
 (function ()
 {
 	var ipaddr = require('ipaddr.js');
-	var php = require('./php.js');
 	
 	function valid_ip(addr)
 	{
@@ -15,14 +14,28 @@
 
 	function ver(addr)
 	{
-		if (php.ip2long(addr)) //IPv4
-		{
-			return 4;
+		try {
+			var parse_addr = ipaddr.parse(addr);
+			var kind = parse_addr.kind();
+
+			if (kind == 'ipv4')
+			{
+				return 4; //IPv4
+			}
+			else if (kind == 'ipv6')
+			{
+				return 6; //IPv6
+			}
+			else
+			{
+				return 0; //not 4 or 6
+			}
+			
 		}
-		else //IPv6
-		{
-			return 6;
+		catch(err) {
+			return 0; //not 4 or 6
 		}
+
 	}
 
 	function in_range(addr, range)

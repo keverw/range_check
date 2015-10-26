@@ -5,7 +5,7 @@ This is a simple module to validate IP address, check ip address version, check 
 
 To set up Range Check on your Node.js server use npm.
 
-    npm install range_check
+`npm install range_check`
 
 
 ##Check if IP is valid##
@@ -41,5 +41,4 @@ console.log(rangeCheck.inRange('192.168.1.1', ['10.0.0.0/8', '192.0.0.0/8'])); /
 ```
 
 ##Dependencies##
-- php.js - [http://phpjs.org/](http://phpjs.org/)
 - ipaddr.js - [https://github.com/whitequark/ipaddr.js](https://github.com/whitequark/ipaddr.js)
