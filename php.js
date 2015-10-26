@@ -164,54 +164,6 @@ exports.inet_ntop = function (a) {
     }
 };
 
-exports.inet_pton = function (a) {
-    // Converts a human readable IP address to a packed binary string  
-    // 
-    // version: 1109.2015
-    // discuss at: http://phpjs.org/functions/inet_pton
-    // +   original by: Theriault
-    // *     example 1: \php.inet_pton('::');
-    // *     returns 1: '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0' (binary)
-    // *     example 2: \php.inet_pton('127.0.0.1');
-    // *     returns 2: '\x7F\x00\x00\x01' (binary)
-    var r, m, x, i, j, f = String.fromCharCode;
-    m = a.match(/^(?:\d{1,3}(?:\.|$)){4}/); // IPv4
-    if (m) {
-        m = m[0].split('.');
-        m = f(m[0]) + f(m[1]) + f(m[2]) + f(m[3]);
-        // Return if 4 bytes, otherwise false.
-        return m.length === 4 ? m : false;
-    }
-    r = /^((?:[\da-f]{1,4}(?::|)){0,8})(::)?((?:[\da-f]{1,4}(?::|)){0,8})$/;
-    m = a.match(r); // IPv6
-    if (m) {
-        // Translate each hexadecimal value.
-        for (j = 1; j < 4; j++) {
-            // Indice 2 is :: and if no length, continue.
-            if (j === 2 || m[j].length === 0) {
-                continue;
-            }
-            m[j] = m[j].split(':');
-            for (i = 0; i < m[j].length; i++) {
-                m[j][i] = parseInt(m[j][i], 16);
-                // Would be NaN if it was blank, return false.
-                if (isNaN(m[j][i])) {
-                    return false; // Invalid IP.
-                }
-                m[j][i] = f(m[j][i] >> 8) + f(m[j][i] & 0xFF);
-            }
-            m[j] = m[j].join('');
-        }
-        x = m[1].length + m[3].length;
-        if (x === 16) {
-            return m[1] + m[3];
-        } else if (x < 16 && m[2].length > 0) {
-            return m[1] + (new Array(16 - x + 1)).join('\x00') + m[3];
-        }
-    }
-    return false; // Invalid IP.
-};
-
 exports.ip2long = function (IP) {
     // Converts a string containing an (IPv4) Internet Protocol dotted address into a proper address  
     // 
@@ -250,22 +202,3 @@ exports.ip2long = function (IP) {
     }
     return IP[1] * (IP[0] === 1 || 16777216) + IP[2] * (IP[0] <= 2 || 65536) + IP[3] * (IP[0] <= 3 || 256) + IP[4] * 1;
 };
-
-exports.long2ip = function (proper_address) {
-    // Converts an (IPv4) Internet network address into a string in Internet standard dotted format  
-    // 
-    // version: 1109.2015
-    // discuss at: http://phpjs.org/functions/long2ip
-    // +   original by: Waldo Malqui Silva
-    // *     example 1: \php.long2ip( 3221234342 );
-    // *     returns 1: '192.0.34.166'
-    var output = false;
-
-    if (!isNaN(proper_address) && (proper_address >= 0 || proper_address <= 4294967295)) {
-        output = Math.floor(proper_address / Math.pow(256, 3)) + '.' + Math.floor((proper_address % Math.pow(256, 3)) / Math.pow(256, 2)) + '.' + Math.floor(((proper_address % Math.pow(256, 3)) % Math.pow(256, 2)) / Math.pow(256, 1)) + '.' + Math.floor((((proper_address % Math.pow(256, 3)) % Math.pow(256, 2)) % Math.pow(256, 1)) / Math.pow(256, 0));
-    }
-
-    return output;
-};
-
-
