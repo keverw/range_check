@@ -1,23 +1,23 @@
 [![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
 
-# Range Check v0.0.5#
+#Range Check v1.1.0
 This is a simple module to validate IP address, check ip address version, check if IP is within a range.
 
-## Setup ##
+##Setup
 
 To set up Range Check on your Node.js server use npm.
 
 `npm install range_check`
 
 
-##Check if IP is valid##
+##Check if IP is valid
 
 ```
 var rangeCheck = require('range_check');
 console.log(rangeCheck.validIp('10.0.1.5')); //returns true or false
 ```
 
-##Check IP version##
+##Check IP version
 ```
 var rangeCheck = require('range_check');
 console.log(rangeCheck.ver('10.0.1.5')); //returns 4
@@ -25,7 +25,7 @@ console.log(rangeCheck.ver('2001:4860:8006::62')); //returns 6
 console.log(rangeCheck.ver('foo')); //returns 0 as invalid IP address
 ```
 
-##Check within range ##
+##Check within range
 ```
 var rangeCheck = require('range_check');
 console.log(rangeCheck.inRange('10.0.1.5', '10.0.0.0/8')); //returns true
