@@ -22,5 +22,6 @@
     "type": "git",
     "url": "https://github.com/keverw/range_check"
   },
-  "main": "range_check.js"
+  "main": "range_check.js",
+  "license" : "BSD"
 }
