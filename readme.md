@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
+
 # Range Check v0.0.5#
 This is a simple module to validate IP address, check ip address version, check if IP is within a range.
 
@@ -20,6 +22,7 @@ console.log(rangeCheck.validIp('10.0.1.5')); //returns true or false
 var rangeCheck = require('range_check');
 console.log(rangeCheck.ver('10.0.1.5')); //returns 4
 console.log(rangeCheck.ver('2001:4860:8006::62')); //returns 6
+console.log(rangeCheck.ver('foo')); //returns 0 as invalid IP address
 ```
 
 ##Check within range ##
