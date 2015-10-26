@@ -5,16 +5,7 @@
 	
 	function valid_ip(addr)
 	{
-		var isValid;
-		
-		try {
-			isValid = php.inet_pton(addr) !== false;
-		}
-		catch (e) {
-			isValid = false;
-		}
-		
-		return isValid;
+		return ipaddr.isValid(addr);
 	}
 	
 	function vaild_ip(addr) //backwords capataibity for typo version
