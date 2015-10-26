@@ -12,12 +12,16 @@
 		return valid_ip(addr);
 	}
 
-	// function valid_range(range)
-	// {
-	// 	var range = ipaddr.isValid(range);
+	function valid_range(range)
+	{
+		try {
+			var cidr = ipaddr.parseCIDR(range);
+			return true;
+		} catch(err) {
+			return false;
+		}
 
-	// 	console.log(range);
-	// }
+	}
 
 	function ver(addr)
 	{
@@ -89,7 +93,7 @@
 	var range_check = {};
 	range_check.vaild_ip = range_check.vaildIp = valid_ip;
 	range_check.valid_ip = range_check.validIp = valid_ip;
-	//range_check.valid_range = range_check.validRange = valid_range;
+	range_check.valid_range = range_check.validRange = valid_range;
 	range_check.ver = ver;
 	range_check.in_range = range_check.inRange = in_range;
 	module.exports = range_check;

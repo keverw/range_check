@@ -2,7 +2,7 @@
   "author": "Kevin Whitman (https://github.com/keverw)",
   "name": "range_check",
   "description": "This is a simple module to validate IP address, check ip address version, check if ip is within a range.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "keywords": [
     "IP Address",
     "CIDR",
@@ -16,7 +16,7 @@
     "ipv6"
   ],
   "dependencies": {
-    "ipaddr.js": "0.1.1"
+    "ipaddr.js": "1.0.3"
   },
   "repository": {
     "type": "git",
