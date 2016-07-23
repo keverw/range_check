@@ -1,4 +1,4 @@
-# Range Check v1.3.0
+# Range Check v1.4.0
 [![npm version](https://badge.fury.io/js/range_check.svg)](https://badge.fury.io/js/range_check) &nbsp; [![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
 
 This is a simple module to validate IP address, check IP address version, check if IP is within a range.
@@ -13,6 +13,12 @@ This started out as `range_check` but it does much more than just checking range
 - [IP Functions](#ip-functions)
   - [Check if IP is valid](#check-if-ip-is-valid)
   - [Check IP version](#check-ip-version)
+    - [Ver](#ver)
+    - [isV4](#isv4)
+    - [isV6](#isv6)
+  - [storeIP](#storeip)
+  - [searchIP](#searchip)
+  - [displayIP](#displayip)
 - [Range Functions](#range-functions)
   - [Check if range is valid](#check-if-range-is-valid)
   - [Check if IP is within range](#check-if-ip-is-within-range)
@@ -61,6 +67,48 @@ console.log(rangeCheck.isV6('foo')); //false
 console.log(rangeCheck.isV6('10.0.1.5')); //false
 ```
 
+### storeIP
+This function is useful to get a consistent IP address such for storing it in a database or when searching in a database after being stored using this. So if a V6 address was sent compacted or not, or if you searched by either version this function would make sure you get a consistent IP address for both versions. Also the possibly of saving a few bytes.
+
+If an V6 addressed mapped as v4 is given it will convert it to V4, If any other V6 address is given it is __abbreviated__ and plain V4 addresses are left alone. Returns null if a invalid IP
+
+```js
+var rangeCheck = require('../range_check.js');
+
+console.log(rangeCheck.storeIP('foo')); //null
+console.log(rangeCheck.storeIP('::ffff:127.0.0.1')); //127.0.0.1
+console.log(rangeCheck.storeIP('2001:0000:0111:0000:0011:0000:0001:0000')); //2001:0:111:0:11:0:1:0
+console.log(rangeCheck.storeIP('2001:0001:0000:0001:0000:0000:0000:0000')); //2001:1:0:1::
+console.log(rangeCheck.storeIP('0000:0000:0000:0000:0000:0000:0000:0000')); //::
+console.log(rangeCheck.storeIP('0000:0000:0000:0000:0000:0000:0000:0001')); //::1
+console.log(rangeCheck.storeIP('2041:0000:140F:0000:0000:0000:875B:131B')); //2041:0:140F::875B:131B
+console.log(rangeCheck.storeIP('2001:0001:0002:0003:0004:0005:0006:0007')); //2001:1:2:3:4:5:6:7
+console.log(rangeCheck.storeIP('127.0.0.1')); //127.0.0.1
+```
+
+### searchIP
+Same function as `storeIP`, just a clearer name when you are using it for search instead
+
+### displayIP
+This function is useful for displaying IP addresses, such as after grabbing it back from the database when using `storeIP`
+
+If an V6 addressed mapped as v4 is given it will convert it to V4, If any other V6 address is given it is __normalized__ into the longer version and plain V4 addresses are left alone. Returns a empty string if a invalid IP
+
+```js
+var rangeCheck = require('../range_check.js');
+
+console.log(rangeCheck.displayIP(null)); // ''
+console.log(rangeCheck.displayIP('::ffff:127.0.0.1')); //'127.0.0.1'
+console.log(rangeCheck.displayIP('2001:0:111:0:11:0:1:0')); //'2001:0000:0111:0000:0011:0000:0001:0000'
+console.log(rangeCheck.displayIP('2001:1:0:1::')); //'2001:0001:0000:0001:0000:0000:0000:0000'
+console.log(rangeCheck.displayIP('::')); //'0000:0000:0000:0000:0000:0000:0000:0000'
+console.log(rangeCheck.displayIP('::1')); //'0000:0000:0000:0000:0000:0000:0000:0001'
+console.log(rangeCheck.displayIP('2041:0:140F::875B:131B')); //'2041:0000:140F:0000:0000:0000:875B:131B'
+console.log(rangeCheck.displayIP('2001:1:2:3:4:5:6:7')); //'2001:0001:0002:0003:0004:0005:0006:0007'
+console.log(rangeCheck.displayIP('127.0.0.1')); //'127.0.0.1'
+
+```
+
 ## Range Functions
 
 ### Check if range is valid
@@ -96,3 +144,4 @@ console.log(rangeCheck.inRange('192.168.1.1', ['10.0.0.0/8', '192.0.0.0/8'])); /
 
 ## Dependencies
 * ipaddr.js - [https://github.com/whitequark/ipaddr.js](https://github.com/whitequark/ipaddr.js)
+* ip6 - [https://github.com/elgs/ip6](https://github.com/elgs/ip6)
