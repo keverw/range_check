@@ -1,18 +1,13 @@
 (function ()
 {
 	var ipaddr = require('ipaddr.js');
-	
-	function valid_ip(addr)
+
+	function isIP(addr)
 	{
 		return ipaddr.isValid(addr);
 	}
-	
-	function vaild_ip(addr) //backwords capataibity for typo version
-	{
-		return valid_ip(addr);
-	}
 
-	function valid_range(range)
+	function isRange(range)
 	{
 		try {
 			var cidr = ipaddr.parseCIDR(range);
@@ -41,7 +36,7 @@
 			{
 				return 0; //not 4 or 6
 			}
-			
+
 		}
 		catch(err) {
 			return 0; //not 4 or 6
@@ -49,7 +44,7 @@
 
 	}
 
-	function in_range(addr, range)
+	function inRange(addr, range)
 	{
 		if (typeof (range) === 'string')
 		{
@@ -57,7 +52,7 @@
 			{
 				try {
 					var range_data = range.split('/');
-					
+
 					var parse_addr = ipaddr.parse(addr);
 					var parse_range = ipaddr.parse(range_data[0]);
 
@@ -69,14 +64,15 @@
 			}
 			else
 			{
-				return vaild_ip(range) && addr === range;
+				//todo: if v6, normalize
+				return isIP(range) && addr === range;
 			}
 		}
 		else if (typeof (range) === 'object') //list
 		{
 			for (var check_range in range)
 			{
-				if (in_range(addr, range[check_range]) === true)
+				if (inRange(addr, range[check_range]) === true)
 				{
 					return true;
 				}
@@ -91,10 +87,18 @@
 
 	// Export public API
 	var range_check = {};
-	range_check.vaild_ip = range_check.vaildIp = valid_ip;
-	range_check.valid_ip = range_check.validIp = valid_ip;
-	range_check.valid_range = range_check.validRange = valid_range;
+	//Validate IP Address
+	range_check.vaild_ip = range_check.vaildIp = isIP;
+	range_check.valid_ip = range_check.validIp = isIP;
+	range_check.isIP = isIP;
+
+	//Validate Range
+	range_check.valid_range = range_check.validRange = isRange;
+	range_check.isRange = isRange;
+
+	//Others
 	range_check.ver = ver;
-	range_check.in_range = range_check.inRange = in_range;
+	range_check.in_range = range_check.inRange = inRange;
+
 	module.exports = range_check;
 }());
