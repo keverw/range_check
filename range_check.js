@@ -44,6 +44,16 @@
 
 	}
 
+	function isV4(addr)
+	{
+		return (ver(addr) === 4);
+	}
+
+	function isV6(addr)
+	{
+		return (ver(addr) === 6);
+	}
+
 	function inRange(addr, range)
 	{
 		if (typeof (range) === 'string')
@@ -91,6 +101,10 @@
 	range_check.vaild_ip = range_check.vaildIp = isIP;
 	range_check.valid_ip = range_check.validIp = isIP;
 	range_check.isIP = isIP;
+
+	//isV4 and isV6
+	range_check.isV4 = isV4;
+	range_check.isV6 = isV6;
 
 	//Validate Range
 	range_check.valid_range = range_check.validRange = isRange;

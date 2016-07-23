@@ -35,11 +35,30 @@ console.log(rangeCheck.isIP('10.0.1.5')); //returns true or false
 ```
 
 ### Check IP version
+#### Ver
 ```
 var rangeCheck = require('range_check');
 console.log(rangeCheck.ver('10.0.1.5')); //returns 4
 console.log(rangeCheck.ver('2001:4860:8006::62')); //returns 6
 console.log(rangeCheck.ver('foo')); //returns 0 as invalid IP address
+```
+
+#### isV4
+```js
+var rangeCheck = require('range_check');
+
+console.log(rangeCheck.isV4('10.0.1.5')); //true
+console.log(rangeCheck.isV4('foo')); //false
+console.log(rangeCheck.isV4('123::123')); //false
+```
+
+#### isV6
+```js
+var rangeCheck = require('range_check');
+
+console.log(rangeCheck.isV6('123::123')); //true
+console.log(rangeCheck.isV6('foo')); //false
+console.log(rangeCheck.isV6('10.0.1.5')); //false
 ```
 
 ## Range Functions
