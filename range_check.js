@@ -1,6 +1,7 @@
 (function ()
 {
-	var ipaddr = require('ipaddr.js');
+	var ipaddr = require('ipaddr.js'),
+		ip6 = require('ip6')
 
 	function isIP(addr)
 	{
@@ -56,7 +57,7 @@
 
 	function inRange(addr, range)
 	{
-		if (typeof (range) === 'string')
+		if (typeof range === 'string')
 		{
 			if (range.indexOf('/') !== -1)
 			{
@@ -74,11 +75,13 @@
 			}
 			else
 			{
-				//todo: if v6, normalize
+				addr = (isV6(addr)) ? ip6.normalize(addr) : addr; //v6 normalize addr
+				range = (isV6(range)) ? ip6.normalize(range) : range; //v6 normalize range
+
 				return isIP(range) && addr === range;
 			}
 		}
-		else if (typeof (range) === 'object') //list
+		else if (range && typeof range === 'object') //list
 		{
 			for (var check_range in range)
 			{
