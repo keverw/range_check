@@ -16,11 +16,11 @@
 * Updated ipaddr.js to latest version
 * Updated tests to use assert.equal, so if something returns something unexpected the test will crash.
 * Uppercase `IP` is preferred over `ip` or `Ip` in function names and docs
-*	**Function renaming**
+*    **Function renaming**
 *
-	. All older versions still work
-	* `validip` is now `isIP`
-	* `validRange` is now `isRange`
+    . All older versions still work
+    * `validip` is now `isIP`
+    * `validRange` is now `isRange`
 
 ## 1.4.0 (Jul 23, 2016)
 * added `isV4` and `isV6` functions
