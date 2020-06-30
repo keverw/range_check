@@ -1,4 +1,4 @@
-# Range Check v2.0.1
+# Range Check v2.0.2
 [![npm version](https://badge.fury.io/js/range_check.svg)](https://badge.fury.io/js/range_check) &nbsp; [![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
 
 This is a simple module to validate IP address, check IP address version, check if IP is within a range.
@@ -29,7 +29,9 @@ This started out as `range_check` but it does much more than just checking range
 
 ## Install
 
-`npm install range_check`
+`npm install range_check` or `yarn add range_check`
+
+You can then import the functions as needed or require the entire `range_check` package depending on your own projects configuration.
 
 ## IP Functions
 ### Check if IP is valid
@@ -41,9 +43,9 @@ console.log(isIP('10.0.1.5')); //returns true or false
 ### Check IP version
 #### Version
 ```typescript
-console.log(rangeCheck.version('10.0.1.5')); //returns 4
-console.log(rangeCheck.version('2001:4860:8006::62')); //returns 6
-console.log(rangeCheck.version('foo')); //returns 0 as invalid IP address
+console.log(version('10.0.1.5')); //returns 4
+console.log(version('2001:4860:8006::62')); //returns 6
+console.log(version('foo')); //returns 0 as invalid IP address
 ```
 
 #### isV4

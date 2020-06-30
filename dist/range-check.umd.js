@@ -1082,6 +1082,7 @@
 	exports.isRange = isRange;
 	exports.inRange = inRange;
 	exports.storeIP = storeIP;
+	exports.searchIP = storeIP;
 	exports.displayIP = displayIP;
 
 	Object.defineProperty(exports, '__esModule', { value: true });

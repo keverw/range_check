@@ -100,6 +100,9 @@ export function storeIP(addr: string) {
   }
 }
 
+// searchIP is a aliases of storeIP
+export { storeIP as searchIP };
+
 export function displayIP(addr: string) {
   try {
     var parse_addr = ipaddr.parse(addr);

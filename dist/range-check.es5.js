@@ -1069,5 +1069,5 @@ function displayIP(addr) {
     }
 }
 
-export { isIP, version, isV4, isV6, isRange, inRange, storeIP, displayIP };
+export { isIP, version, isV4, isV6, isRange, inRange, storeIP, storeIP as searchIP, displayIP };
 //# sourceMappingURL=range-check.es5.js.map

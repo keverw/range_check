@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.displayIP = exports.storeIP = exports.inRange = exports.isRange = exports.isV6 = exports.isV4 = exports.version = exports.isIP = void 0;
+exports.displayIP = exports.searchIP = exports.storeIP = exports.inRange = exports.isRange = exports.isV6 = exports.isV4 = exports.version = exports.isIP = void 0;
 var ipaddr_js_1 = __importDefault(require("ipaddr.js"));
 // @ts-ignore: Can't find a @types/ip6 package
 var ip6_1 = __importDefault(require("ip6"));
@@ -111,6 +111,7 @@ function storeIP(addr) {
     }
 }
 exports.storeIP = storeIP;
+exports.searchIP = storeIP;
 function displayIP(addr) {
     try {
         var parse_addr = ipaddr_js_1.default.parse(addr);
