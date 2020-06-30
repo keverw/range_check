@@ -3,5 +3,8 @@ node_js:
   - 8
   - node
   - 'lts/*'
+install:
+  # Install node packages
+  - yarn install --production
 
-cache: npm
+cache: yarn
