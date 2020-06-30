@@ -1,4 +1,4 @@
-# Range Check v2.0.2
+# Range Check v2.0.3
 [![npm version](https://badge.fury.io/js/range_check.svg)](https://badge.fury.io/js/range_check) &nbsp; [![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
 
 This is a simple module to validate IP address, check IP address version, check if IP is within a range.
