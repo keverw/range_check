@@ -1,4 +1,4 @@
-# Range Check v1.4.0
+# Range Check v2.0.0
 [![npm version](https://badge.fury.io/js/range_check.svg)](https://badge.fury.io/js/range_check) &nbsp; [![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
 
 This is a simple module to validate IP address, check IP address version, check if IP is within a range.
@@ -13,77 +13,100 @@ This started out as `range_check` but it does much more than just checking range
 - [IP Functions](#ip-functions)
   - [Check if IP is valid](#check-if-ip-is-valid)
   - [Check IP version](#check-ip-version)
-    - [Ver](#ver)
+    - [Version](#version)
     - [isV4](#isv4)
     - [isV6](#isv6)
-  - [storeIP](#storeip)
-  - [searchIP](#searchip)
-  - [displayIP](#displayip)
 - [Range Functions](#range-functions)
   - [Check if range is valid](#check-if-range-is-valid)
   - [Check if IP is within range](#check-if-ip-is-within-range)
+  - [storeIP](#storeip)
+  - [searchIP](#searchip)
+  - [displayIP](#displayip)
+- [Contributing](#contributing)
 - [Dependencies](#dependencies)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Install
 
-To set up Range Check on your Node.js server use npm.
-
 `npm install range_check`
 
 ## IP Functions
 ### Check if IP is valid
 
-```js
-var rangeCheck = require('range_check');
-console.log(rangeCheck.isIP('10.0.1.5')); //returns true or false
+```typescript
+console.log(isIP('10.0.1.5')); //returns true or false
 ```
 
 ### Check IP version
-#### Ver
-```
-var rangeCheck = require('range_check');
-console.log(rangeCheck.ver('10.0.1.5')); //returns 4
-console.log(rangeCheck.ver('2001:4860:8006::62')); //returns 6
-console.log(rangeCheck.ver('foo')); //returns 0 as invalid IP address
+#### Version
+```typescript
+console.log(rangeCheck.version('10.0.1.5')); //returns 4
+console.log(rangeCheck.version('2001:4860:8006::62')); //returns 6
+console.log(rangeCheck.version('foo')); //returns 0 as invalid IP address
 ```
 
 #### isV4
-```js
-var rangeCheck = require('range_check');
-
-console.log(rangeCheck.isV4('10.0.1.5')); //true
-console.log(rangeCheck.isV4('foo')); //false
-console.log(rangeCheck.isV4('123::123')); //false
+```typescript
+console.log(isV4('10.0.1.5')); //true
+console.log(isV4('foo')); //false
+console.log(isV4('123::123')); //false
 ```
 
 #### isV6
-```js
-var rangeCheck = require('range_check');
+```typescript
+console.log(isV6('123::123')); //true
+console.log(isV6('foo')); //false
+console.log(isV6('10.0.1.5')); //false
+```
 
-console.log(rangeCheck.isV6('123::123')); //true
-console.log(rangeCheck.isV6('foo')); //false
-console.log(rangeCheck.isV6('10.0.1.5')); //false
+## Range Functions
+
+### Check if range is valid
+
+You can use isRange if you want to validate an entire range.
+
+```typescript
+console.log(isRange('2001:db8::/32')); //true
+console.log(isRange('10.0.0.0/8')); // true
+console.log(isRange('qwerty')); // false
+
+```
+
+### Check if IP is within range
+```typescript
+console.log(inRange('10.0.1.5', '10.0.0.0/8')); //returns true
+
+console.log(inRange('192.0.1.5', '10.0.0.0/8')); //returns false
+
+console.log(inRange('2001:db8:1234::1', '2001:db8::/32')); //returns true
+```
+
+You can also give a list of ranges
+
+```typescript
+var rangeCheck = require('range_check');
+console.log(inRange('192.168.1.1', ['10.0.0.0/8', '192.0.0.0/8'])); //returns true
+
 ```
 
 ### storeIP
 This function is useful to get a consistent IP address such for storing it in a database or when searching in a database after being stored using this. So if a V6 address was sent compacted or not, or if you searched by either version this function would make sure you get a consistent IP address for both versions. Also the possibly of saving a few bytes.
 
-If an V6 addressed mapped as v4 is given it will convert it to V4, If any other V6 address is given it is __abbreviated__ and plain V4 addresses are left alone. Returns null if a invalid IP
+If an V6 addressed is mapped as v4 is given it will convert it to V4, If any other V6 address is given it is __abbreviated__ and plain V4 addresses are left alone. Returns null if a invalid IP
 
-```js
+```typescript
 var rangeCheck = require('../range_check.js');
 
-console.log(rangeCheck.storeIP('foo')); //null
-console.log(rangeCheck.storeIP('::ffff:127.0.0.1')); //127.0.0.1
-console.log(rangeCheck.storeIP('2001:0000:0111:0000:0011:0000:0001:0000')); //2001:0:111:0:11:0:1:0
-console.log(rangeCheck.storeIP('2001:0001:0000:0001:0000:0000:0000:0000')); //2001:1:0:1::
-console.log(rangeCheck.storeIP('0000:0000:0000:0000:0000:0000:0000:0000')); //::
-console.log(rangeCheck.storeIP('0000:0000:0000:0000:0000:0000:0000:0001')); //::1
-console.log(rangeCheck.storeIP('2041:0000:140F:0000:0000:0000:875B:131B')); //2041:0:140F::875B:131B
-console.log(rangeCheck.storeIP('2001:0001:0002:0003:0004:0005:0006:0007')); //2001:1:2:3:4:5:6:7
-console.log(rangeCheck.storeIP('127.0.0.1')); //127.0.0.1
+console.log(storeIP('foo')); //null
+console.log(storeIP('::ffff:127.0.0.1')); //127.0.0.1
+console.log(storeIP('2001:0000:0111:0000:0011:0000:0001:0000')); //2001:0:111:0:11:0:1:0
+console.log(storeIP('2001:0001:0000:0001:0000:0000:0000:0000')); //2001:1:0:1::
+console.log(storeIP('0000:0000:0000:0000:0000:0000:0000:0000')); //::
+console.log(storeIP('0000:0000:0000:0000:0000:0000:0000:0001')); //::1
+console.log(storeIP('2041:0000:140F:0000:0000:0000:875B:131B')); //2041:0:140F::875B:131B
+console.log(storeIP('2001:0001:0002:0003:0004:0005:0006:0007')); //2001:1:2:3:4:5:6:7
+console.log(storeIP('127.0.0.1')); //127.0.0.1
 ```
 
 ### searchIP
@@ -94,53 +117,32 @@ This function is useful for displaying IP addresses, such as after grabbing it b
 
 If an V6 addressed mapped as v4 is given it will convert it to V4, If any other V6 address is given it is __normalized__ into the longer version and plain V4 addresses are left alone. Returns a empty string if a invalid IP
 
-```js
+```typescript
 var rangeCheck = require('../range_check.js');
 
-console.log(rangeCheck.displayIP(null)); // ''
-console.log(rangeCheck.displayIP('::ffff:127.0.0.1')); //'127.0.0.1'
-console.log(rangeCheck.displayIP('2001:0:111:0:11:0:1:0')); //'2001:0000:0111:0000:0011:0000:0001:0000'
-console.log(rangeCheck.displayIP('2001:1:0:1::')); //'2001:0001:0000:0001:0000:0000:0000:0000'
-console.log(rangeCheck.displayIP('::')); //'0000:0000:0000:0000:0000:0000:0000:0000'
-console.log(rangeCheck.displayIP('::1')); //'0000:0000:0000:0000:0000:0000:0000:0001'
-console.log(rangeCheck.displayIP('2041:0:140F::875B:131B')); //'2041:0000:140F:0000:0000:0000:875B:131B'
-console.log(rangeCheck.displayIP('2001:1:2:3:4:5:6:7')); //'2001:0001:0002:0003:0004:0005:0006:0007'
-console.log(rangeCheck.displayIP('127.0.0.1')); //'127.0.0.1'
+console.log(displayIP(null)); // ''
+console.log(displayIP('::ffff:127.0.0.1')); //'127.0.0.1'
+console.log(displayIP('2001:0:111:0:11:0:1:0')); //'2001:0000:0111:0000:0011:0000:0001:0000'
+console.log(displayIP('2001:1:0:1::')); //'2001:0001:0000:0001:0000:0000:0000:0000'
+console.log(displayIP('::')); //'0000:0000:0000:0000:0000:0000:0000:0000'
+console.log(displayIP('::1')); //'0000:0000:0000:0000:0000:0000:0000:0001'
+console.log(displayIP('2041:0:140F::875B:131B')); //'2041:0000:140F:0000:0000:0000:875B:131B'
+console.log(displayIP('2001:1:2:3:4:5:6:7')); //'2001:0001:0002:0003:0004:0005:0006:0007'
+console.log(displayIP('127.0.0.1')); //'127.0.0.1'
 
 ```
 
-## Range Functions
+## Contributing
+This project's Typescript conversion is powered by the [TypeScript library starter
+](https://github.com/alexjoverm/typescript-library-starter) which provides the following scripts.
 
-### Check if range is valid
-
-You can use isRange if you want to validate an entire range.
-
-```js
-var rangeCheck = require('range_check');
-
-console.log(rangeCheck.isRange('2001:db8::/32')); //true
-console.log(rangeCheck.isRange('10.0.0.0/8')); // true
-console.log(rangeCheck.isRange('qwerty')); // false
-
-```
-
-### Check if IP is within range
-```js
-var rangeCheck = require('range_check');
-console.log(rangeCheck.inRange('10.0.1.5', '10.0.0.0/8')); //returns true
-
-console.log(rangeCheck.inRange('192.0.1.5', '10.0.0.0/8')); //returns false
-
-console.log(rangeCheck.inRange('2001:db8:1234::1', '2001:db8::/32')); //returns true
-```
-
-You can also give a list of ranges
-
-```js
-var rangeCheck = require('range_check');
-console.log(rangeCheck.inRange('192.168.1.1', ['10.0.0.0/8', '192.0.0.0/8'])); //returns true
-
-```
+ - `yarn run test`: Run test suite
+ - `yarn run start`: Run `npm run build` in watch mode
+ - `yarn run test:watch`: Run test suite in [interactive watch mode](http://facebook.github.io/jest/docs/cli.html#watch)
+ - `yarn run test:prod`: Run linting and generate coverage
+ - `yarn run build`: Generate bundles and typings, create docs
+ - `yarn run lint`: Lints code
+ - `yarn run commit`: Commit using conventional commit style ([husky](https://github.com/typicode/husky) will tell you to use it if you haven't :wink:)
 
 ## Dependencies
 * ipaddr.js - [https://github.com/whitequark/ipaddr.js](https://github.com/whitequark/ipaddr.js)

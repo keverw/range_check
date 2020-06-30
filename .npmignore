@@ -1,2 +1,6 @@
 npm-debug.log
+yarn-error.log
 node_modules/
+.rpt2_cache/
+coverage/
+docs/
