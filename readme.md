@@ -1,4 +1,4 @@
-# Range Check v2.0.0
+# Range Check v2.0.1
 [![npm version](https://badge.fury.io/js/range_check.svg)](https://badge.fury.io/js/range_check) &nbsp; [![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
 
 This is a simple module to validate IP address, check IP address version, check if IP is within a range.
@@ -85,7 +85,6 @@ console.log(inRange('2001:db8:1234::1', '2001:db8::/32')); //returns true
 You can also give a list of ranges
 
 ```typescript
-var rangeCheck = require('range_check');
 console.log(inRange('192.168.1.1', ['10.0.0.0/8', '192.0.0.0/8'])); //returns true
 
 ```
@@ -96,8 +95,6 @@ This function is useful to get a consistent IP address such for storing it in a 
 If an V6 addressed is mapped as v4 is given it will convert it to V4, If any other V6 address is given it is __abbreviated__ and plain V4 addresses are left alone. Returns null if a invalid IP
 
 ```typescript
-var rangeCheck = require('../range_check.js');
-
 console.log(storeIP('foo')); //null
 console.log(storeIP('::ffff:127.0.0.1')); //127.0.0.1
 console.log(storeIP('2001:0000:0111:0000:0011:0000:0001:0000')); //2001:0:111:0:11:0:1:0
@@ -118,8 +115,6 @@ This function is useful for displaying IP addresses, such as after grabbing it b
 If an V6 addressed mapped as v4 is given it will convert it to V4, If any other V6 address is given it is __normalized__ into the longer version and plain V4 addresses are left alone. Returns a empty string if a invalid IP
 
 ```typescript
-var rangeCheck = require('../range_check.js');
-
 console.log(displayIP(null)); // ''
 console.log(displayIP('::ffff:127.0.0.1')); //'127.0.0.1'
 console.log(displayIP('2001:0:111:0:11:0:1:0')); //'2001:0000:0111:0000:0011:0000:0001:0000'
