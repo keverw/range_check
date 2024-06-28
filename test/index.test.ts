@@ -1,14 +1,5 @@
-import {
-  isIP,
-  version,
-  isV4,
-  isV6,
-  isRange,
-  inRange,
-  storeIP,
-  displayIP,
-  searchIP
-} from '../src/range-check';
+import { test, expect } from 'bun:test';
+import { isIP, version, isV4, isV6, isRange, inRange, storeIP, displayIP, searchIP } from '../src/index';
 
 test('isIP', function () {
   expect(isIP('10.0.1.5')).toBeTruthy();

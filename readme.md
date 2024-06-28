@@ -130,16 +130,22 @@ console.log(displayIP('127.0.0.1')); //'127.0.0.1'
 ```
 
 ## Contributing
-This project's Typescript conversion is powered by the [TypeScript library starter
-](https://github.com/alexjoverm/typescript-library-starter) which provides the following scripts.
 
- - `yarn run test`: Run test suite
- - `yarn run start`: Run `npm run build` in watch mode
- - `yarn run test:watch`: Run test suite in [interactive watch mode](http://facebook.github.io/jest/docs/cli.html#watch)
- - `yarn run test:prod`: Run linting and generate coverage
- - `yarn run build`: Generate bundles and typings, create docs
- - `yarn run lint`: Lints code
- - `yarn run commit`: Commit using conventional commit style ([husky](https://github.com/typicode/husky) will tell you to use it if you haven't :wink:)
+This project is using this starter library [bun-lib-starter](https://github.com/maxam2017/bun-lib-starter/tree/main)
+Currently to use NPM to publish, must have that installed with Node, along side `Bun`
+
+```sh
+cd into the repo
+
+pre-commit install
+
+bun install
+```
+
+ - `bun run test`: Run test suite
+ - `bun run build`: Generate bundles and typings
+ - `bun run format`: Format source files, readme, etc
+
 
 ## Dependencies
 * ipaddr.js - [https://github.com/whitequark/ipaddr.js](https://github.com/whitequark/ipaddr.js)

@@ -34,7 +34,7 @@ export function isV6(addr: string) {
 
 export function isRange(range: string) {
   try {
-    const cidr = ipaddr.parseCIDR(range);
+    ipaddr.parseCIDR(range);
     return true;
   } catch (err) {
     return false;
