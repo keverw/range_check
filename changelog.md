@@ -37,3 +37,4 @@
 # 3.0.0 (TBD)
 
 * Converted to [bun-lib-starter](https://github.com/maxam2017/bun-lib-starter/tree/main)
+* Fixed https://github.com/keverw/range_check/issues/25

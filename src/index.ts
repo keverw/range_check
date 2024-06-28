@@ -3,7 +3,9 @@ import ipaddr from 'ipaddr.js';
 import ip6 from 'ip6';
 
 export function isIP(addr: string) {
-  return ipaddr.isValid(addr);
+  const ver = version(addr);
+
+  return ver === 4 || ver === 6;
 }
 
 export function version(addr: string): number {
@@ -12,7 +14,11 @@ export function version(addr: string): number {
     const kind = parse_addr.kind();
 
     if (kind === 'ipv4') {
-      return 4; //IPv4
+      if (ipaddr.IPv4.isValidFourPartDecimal(addr)) {
+        return 4; //IPv4
+      } else {
+        return 0; //not 4 or 6
+      }
     } else if (kind === 'ipv6') {
       return 6; //IPv6
     } else {

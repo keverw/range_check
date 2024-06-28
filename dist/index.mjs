@@ -2,14 +2,19 @@
 import ipaddr from "ipaddr.js";
 import ip6 from "ip6";
 function isIP(addr) {
-  return ipaddr.isValid(addr);
+  const ver = version(addr);
+  return ver === 4 || ver === 6;
 }
 function version(addr) {
   try {
     const parse_addr = ipaddr.parse(addr);
     const kind = parse_addr.kind();
     if (kind === "ipv4") {
-      return 4;
+      if (ipaddr.IPv4.isValidFourPartDecimal(addr)) {
+        return 4;
+      } else {
+        return 0;
+      }
     } else if (kind === "ipv6") {
       return 6;
     } else {

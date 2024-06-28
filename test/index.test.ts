@@ -7,18 +7,26 @@ test('isIP', function () {
   expect(isIP('123::123')).toBeTruthy();
   expect(isIP('foo')).toBeFalsy();
   expect(isIP('192.168.1.1.')).toBeFalsy();
+
+  // from: https://github.com/keverw/range_check/issues/25
+  expect(isIP('1')).toBeFalsy();
 });
 
 test('version', function () {
   expect(version('10.0.1.5')).toEqual(4);
   expect(version('2001:4860:8006::62')).toEqual(6);
   expect(version('foo')).toEqual(0);
+
+  // from: https://github.com/keverw/range_check/issues/25
+  expect(version('1')).toEqual(0);
 });
 
 test('isV4', function () {
   expect(isV4('10.0.1.5')).toBeTruthy();
   expect(isV4('123::123')).toBeFalsy();
   expect(isV4('foo')).toBeFalsy();
+  // from: https://github.com/keverw/range_check/issues/25
+  expect(isV4('1')).toBeFalsy();
 });
 
 test('isV6', function () {
