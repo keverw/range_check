@@ -1,5 +1,17 @@
 import { test, expect } from 'bun:test';
-import { isIP, version, isV4, isV6, isRange, inRange, storeIP, displayIP, searchIP, isPrivateIP } from '../src/index';
+import {
+  isIP,
+  version,
+  isV4,
+  isV6,
+  isRange,
+  inRange,
+  storeIP,
+  displayIP,
+  searchIP,
+  isPrivateIP,
+  isIPInRangeOrPrivate,
+} from '../src/index';
 
 test('isIP', function () {
   expect(isIP('10.0.1.5')).toBeTruthy();
@@ -84,6 +96,34 @@ test('isPrivateIP', function () {
   expect(isPrivateIP('2001:db8::g')).toBeFalsy(); // Invalid IPv6 (contains 'g')
   expect(isPrivateIP('not an ip')).toBeFalsy(); // Non-IP string
   expect(isPrivateIP('')).toBeFalsy(); // Empty string
+});
+
+test('isIPInRangeOrPrivate', function () {
+  // Test with default options (allow any private)
+  expect(isIPInRangeOrPrivate('192.168.1.1')).toBeTruthy();
+  expect(isIPInRangeOrPrivate('10.0.0.1')).toBeTruthy();
+  expect(isIPInRangeOrPrivate('172.16.0.1')).toBeTruthy();
+  expect(isIPInRangeOrPrivate('8.8.8.8')).toBeFalsy();
+
+  // Test with ranges
+  expect(isIPInRangeOrPrivate('8.8.8.8', { ranges: '8.8.8.0/24' })).toBeTruthy();
+  expect(isIPInRangeOrPrivate('8.8.4.4', { ranges: '8.8.8.0/24' })).toBeFalsy();
+  expect(isIPInRangeOrPrivate('192.168.1.1', { ranges: '8.8.8.0/24' })).toBeTruthy(); // Private IP still allowed
+
+  // Test with allowAnyPrivate set to false
+  expect(isIPInRangeOrPrivate('192.168.1.1', { allowAnyPrivate: false })).toBeFalsy();
+  expect(isIPInRangeOrPrivate('8.8.8.8', { allowAnyPrivate: false, ranges: '8.8.8.0/24' })).toBeTruthy();
+  expect(isIPInRangeOrPrivate('10.0.0.1', { allowAnyPrivate: false, ranges: '8.8.8.0/24' })).toBeFalsy();
+
+  // Test with IPv6
+  expect(isIPInRangeOrPrivate('fd00::1')).toBeTruthy(); // ULA IPv6
+  expect(isIPInRangeOrPrivate('2001:db8::1', { ranges: '2001:db8::/32' })).toBeTruthy();
+  expect(isIPInRangeOrPrivate('2001:db8::1', { allowAnyPrivate: false, ranges: '2001:db8::/32' })).toBeTruthy();
+
+  // Test with multiple ranges
+  expect(
+    isIPInRangeOrPrivate('172.20.0.1', { allowAnyPrivate: false, ranges: ['10.0.0.0/8', '172.20.0.0/16'] }),
+  ).toBeTruthy();
 });
 
 test('storeIP', function () {

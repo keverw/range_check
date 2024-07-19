@@ -33,6 +33,7 @@ __export(src_exports, {
   displayIP: () => displayIP,
   inRange: () => inRange,
   isIP: () => isIP,
+  isIPInRangeOrPrivate: () => isIPInRangeOrPrivate,
   isPrivateIP: () => isPrivateIP,
   isRange: () => isRange,
   isV4: () => isV4,
@@ -123,6 +124,15 @@ function isPrivateIP(ip) {
     return false;
   }
 }
+function isIPInRangeOrPrivate(ip, options = { allowAnyPrivate: true }) {
+  if (options.allowAnyPrivate !== false && isPrivateIP(ip)) {
+    return true;
+  }
+  if (options.ranges) {
+    return inRange(ip, options.ranges);
+  }
+  return false;
+}
 function storeIP(addr) {
   try {
     var parse_addr = import_ipaddr.default.parse(addr);
@@ -166,6 +176,7 @@ function displayIP(addr) {
   displayIP,
   inRange,
   isIP,
+  isIPInRangeOrPrivate,
   isPrivateIP,
   isRange,
   isV4,

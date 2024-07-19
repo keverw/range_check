@@ -98,6 +98,24 @@ export function isPrivateIP(ip: string): boolean {
   }
 }
 
+export function isIPInRangeOrPrivate(
+  ip: string,
+  options: {
+    ranges?: string[] | string;
+    allowAnyPrivate?: boolean;
+  } = { allowAnyPrivate: true },
+) {
+  if (options.allowAnyPrivate !== false && isPrivateIP(ip)) {
+    return true;
+  }
+
+  if (options.ranges) {
+    return inRange(ip, options.ranges);
+  }
+
+  return false;
+}
+
 export function storeIP(addr: string) {
   try {
     var parse_addr = ipaddr.parse(addr);

@@ -20,6 +20,7 @@ This started out as `range_check` but it does much more than just checking range
   - [Check if range is valid](#check-if-range-is-valid)
   - [Check if IP is within range](#check-if-ip-is-within-range)
   - [Check if IP is private](#check-if-ip-is-private)
+  - [Check if IP is in range or private](#check-if-ip-is-in-range-or-private)
   - [storeIP](#storeip)
   - [searchIP](#searchip)
   - [displayIP](#displayip)
@@ -107,6 +108,24 @@ This function checks if an IP address is private. It returns true for:
 - IPv4 loopback addresses (127.0.0.0/8)
 - IPv6 unique local addresses (fd00::/8)
 - IPv6 loopback address (::1)
+
+### Check if IP is in range or private
+```typescript
+console.log(isIPInRangeOrPrivate('192.168.1.1')); // returns true (private IP)
+console.log(isIPInRangeOrPrivate('8.8.8.8')); // returns false (public IP, no range specified)
+console.log(isIPInRangeOrPrivate('8.8.8.8', { ranges: '8.8.8.0/24' })); // returns true
+console.log(isIPInRangeOrPrivate('10.0.0.1', { allowAnyPrivate: false, ranges: '8.8.8.0/24' })); // returns false
+```
+
+This function checks if an IP address is either within a specified range or is a private IP. It's particularly useful for scenarios where you need to determine if a request is coming from a local server or a specific set of allowed IPs.
+
+Options:
+- `ranges`: A string or array of strings representing IP ranges to check against.
+- `allowAnyPrivate`: Boolean to determine if any private IP should be allowed. Defaults to true.
+
+If no options are provided, the function will return true for any private IP and false for public IPs.
+
+Use case example: This function can be used in server configurations to easily allow local calls or calls from specific IP ranges, while blocking others. For instance, it can be used in middleware for setting trace IDs. This allows you to automatically set trace IDs for requests from private networks or specific IP ranges, which can be useful for debugging and tracking requests across microservices in a distributed system.
 
 ### storeIP
 This function is useful to get a consistent IP address such for storing it in a database or when searching in a database after being stored using this. So if a V6 address was sent compacted or not, or if you searched by either version this function would make sure you get a consistent IP address for both versions. Also the possibly of saving a few bytes.

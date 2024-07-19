@@ -42,3 +42,7 @@
 # 3.1.0 (July 18, 2024)
 
 * Added `isPrivateIP` function
+
+# 3.2.0 (July 18, 2024) 
+
+* Added `isIPInRangeOrPrivate` function
