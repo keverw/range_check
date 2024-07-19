@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test';
-import { isIP, version, isV4, isV6, isRange, inRange, storeIP, displayIP, searchIP } from '../src/index';
+import { isIP, version, isV4, isV6, isRange, inRange, storeIP, displayIP, searchIP, isPrivateIP } from '../src/index';
 
 test('isIP', function () {
   expect(isIP('10.0.1.5')).toBeTruthy();
@@ -54,6 +54,36 @@ test('inRange', function () {
 
   // @ts-ignore: Just testing for unit testing
   expect(inRange('lol', 1)).toBeFalsy();
+});
+
+test('isPrivateIP', function () {
+  // IPv4 tests
+  expect(isPrivateIP('10.0.0.1')).toBeTruthy(); // Class A private network
+  expect(isPrivateIP('10.255.255.255')).toBeTruthy(); // Class A private network (upper bound)
+  expect(isPrivateIP('172.16.0.1')).toBeTruthy(); // Class B private network
+  expect(isPrivateIP('172.31.255.255')).toBeTruthy(); // Class B private network (upper bound)
+  expect(isPrivateIP('192.168.0.1')).toBeTruthy(); // Class C private network
+  expect(isPrivateIP('192.168.255.255')).toBeTruthy(); // Class C private network (upper bound)
+  expect(isPrivateIP('127.0.0.1')).toBeTruthy(); // Loopback address
+  expect(isPrivateIP('127.255.255.255')).toBeTruthy(); // Loopback network (upper bound)
+  expect(isPrivateIP('8.8.8.8')).toBeFalsy(); // Public IP (Google DNS)
+  expect(isPrivateIP('11.0.0.1')).toBeFalsy(); // Public IP (just outside Class A private range)
+
+  // IPv6 tests
+  expect(isPrivateIP('fd00::1')).toBeTruthy(); // Unique Local Address (ULA)
+  expect(isPrivateIP('fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff')).toBeTruthy(); // Max ULA
+  expect(isPrivateIP('fc00::1')).toBeTruthy(); // Min ULA
+  expect(isPrivateIP('::1')).toBeTruthy(); // Loopback address
+  expect(isPrivateIP('fe80::1')).toBeFalsy(); // Link-local address (not considered private)
+  expect(isPrivateIP('2001:db8::1')).toBeFalsy(); // Documentation prefix (not private)
+  expect(isPrivateIP('2001::')).toBeFalsy(); // Global Unicast Address
+
+  // Invalid IP tests
+  expect(isPrivateIP('256.0.0.1')).toBeFalsy(); // Invalid IPv4 (octet > 255)
+  expect(isPrivateIP('192.168.1.256')).toBeFalsy(); // Invalid IPv4 (last octet > 255)
+  expect(isPrivateIP('2001:db8::g')).toBeFalsy(); // Invalid IPv6 (contains 'g')
+  expect(isPrivateIP('not an ip')).toBeFalsy(); // Non-IP string
+  expect(isPrivateIP('')).toBeFalsy(); // Empty string
 });
 
 test('storeIP', function () {

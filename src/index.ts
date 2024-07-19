@@ -80,6 +80,24 @@ export function inRange(addr: string, range: string | string[]) {
   }
 }
 
+export function isPrivateIP(ip: string): boolean {
+  try {
+    const addr = ipaddr.parse(ip);
+    const kind = addr.kind();
+    const range = addr.range();
+
+    if (kind === 'ipv4') {
+      return range === 'private' || range === 'loopback' || ip === '127.0.0.1';
+    } else if (kind === 'ipv6') {
+      return range === 'uniqueLocal' || range === 'loopback' || ip === '::1';
+    }
+
+    return false;
+  } catch (err) {
+    return false;
+  }
+}
+
 export function storeIP(addr: string) {
   try {
     var parse_addr = ipaddr.parse(addr);

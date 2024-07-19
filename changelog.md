@@ -34,7 +34,11 @@
 * *Breaking*: `version` is now fully spelled out instead of `ver`.
 * *Breaking*: Lowercase now being used for `storeIP` and `displayIP` https://stackoverflow.com/a/27510980/458642 - This matches the RFC that states `The characters "a", "b", "c", "d", "e", and "f" in an IPv6 address MUST be represented in lowercase.`. So if you stored any of this where case-sensitivity might matter such as perhaps a database index, make sure you correct that before upgrading!
 
-# 3.0.0 (TBD)
+# 3.0.0 (June 27, 2024)
 
 * Converted to [bun-lib-starter](https://github.com/maxam2017/bun-lib-starter/tree/main)
 * Fixed https://github.com/keverw/range_check/issues/25
+
+# 3.1.0 (July 18, 2024)
+
+* Added `isPrivateIP` function

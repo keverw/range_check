@@ -1,4 +1,4 @@
-# Range Check v3.0.0
+# Range Check v3.1.0
 [![npm version](https://badge.fury.io/js/range_check.svg)](https://badge.fury.io/js/range_check) &nbsp; [![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
 
 This is a simple module to validate IP address, check IP address version, check if IP is within a range.
@@ -19,6 +19,7 @@ This started out as `range_check` but it does much more than just checking range
 - [Range Functions](#range-functions)
   - [Check if range is valid](#check-if-range-is-valid)
   - [Check if IP is within range](#check-if-ip-is-within-range)
+  - [Check if IP is private](#check-if-ip-is-private)
   - [storeIP](#storeip)
   - [searchIP](#searchip)
   - [displayIP](#displayip)
@@ -90,6 +91,22 @@ You can also give a list of ranges
 console.log(inRange('192.168.1.1', ['10.0.0.0/8', '192.0.0.0/8'])); //returns true
 
 ```
+
+### Check if IP is private
+```typescript
+console.log(isPrivateIP('10.0.0.1')); //returns true
+console.log(isPrivateIP('192.168.1.1')); //returns true
+console.log(isPrivateIP('172.16.0.1')); //returns true
+console.log(isPrivateIP('8.8.8.8')); //returns false
+console.log(isPrivateIP('fd00::1')); //returns true (IPv6 ULA)
+console.log(isPrivateIP('2001:db8::1')); //returns false
+```
+
+This function checks if an IP address is private. It returns true for:
+- IPv4 private ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
+- IPv4 loopback addresses (127.0.0.0/8)
+- IPv6 unique local addresses (fd00::/8)
+- IPv6 loopback address (::1)
 
 ### storeIP
 This function is useful to get a consistent IP address such for storing it in a database or when searching in a database after being stored using this. So if a V6 address was sent compacted or not, or if you searched by either version this function would make sure you get a consistent IP address for both versions. Also the possibly of saving a few bytes.
