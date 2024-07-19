@@ -33,6 +33,7 @@ __export(src_exports, {
   displayIP: () => displayIP,
   inRange: () => inRange,
   isIP: () => isIP,
+  isPrivateIP: () => isPrivateIP,
   isRange: () => isRange,
   isV4: () => isV4,
   isV6: () => isV6,
@@ -107,6 +108,21 @@ function inRange(addr, range) {
     return false;
   }
 }
+function isPrivateIP(ip) {
+  try {
+    const addr = import_ipaddr.default.parse(ip);
+    const kind = addr.kind();
+    const range = addr.range();
+    if (kind === "ipv4") {
+      return range === "private" || range === "loopback" || ip === "127.0.0.1";
+    } else if (kind === "ipv6") {
+      return range === "uniqueLocal" || range === "loopback" || ip === "::1";
+    }
+    return false;
+  } catch (err) {
+    return false;
+  }
+}
 function storeIP(addr) {
   try {
     var parse_addr = import_ipaddr.default.parse(addr);
@@ -150,6 +166,7 @@ function displayIP(addr) {
   displayIP,
   inRange,
   isIP,
+  isPrivateIP,
   isRange,
   isV4,
   isV6,
