@@ -35,15 +35,15 @@
     "ipv6"
   ],
   "license": "BSD-2-Clause",
-  "homepage": "https://github.com/maxam2017/bun-lib-starter#readme",
- "repository": {
+  "homepage": "https://github.com/keverw/range_check#readme",
+  "repository": {
     "type": "git",
     "url": "https://github.com/keverw/range_check"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "bugs": "https://github.com/maxam2017/bun-lib-starter/issues",
+  "bugs": "https://github.com/keverw/range_check/issues",
   "author": "Kevin Whitman (https://github.com/keverw)",
   "dependencies": {
     "ip6": "^0.2.10",
