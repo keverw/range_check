@@ -73,7 +73,12 @@ function isPrivateIP(ip) {
     if (kind === "ipv4") {
       return range === "private" || range === "loopback" || ip === "127.0.0.1";
     } else if (kind === "ipv6") {
-      return range === "uniqueLocal" || range === "loopback" || ip === "::1";
+      if (range === "ipv4Mapped") {
+        const ipv4 = addr.toIPv4Address();
+        return ipv4.range() === "private" || ipv4.range() === "loopback" || ip === "127.0.0.1";
+      } else {
+        return range === "uniqueLocal" || range === "loopback" || ip === "::1";
+      }
     }
     return false;
   } catch (err) {

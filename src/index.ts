@@ -89,7 +89,16 @@ export function isPrivateIP(ip: string): boolean {
     if (kind === 'ipv4') {
       return range === 'private' || range === 'loopback' || ip === '127.0.0.1';
     } else if (kind === 'ipv6') {
-      return range === 'uniqueLocal' || range === 'loopback' || ip === '::1';
+      if (range === 'ipv4Mapped') {
+        const ipv4 = (addr as ipaddr.IPv6).toIPv4Address();
+        return (
+          ipv4.range() === 'private' ||
+          ipv4.range() === 'loopback' ||
+          ip === '127.0.0.1'
+        );
+      } else {
+        return range === 'uniqueLocal' || range === 'loopback' || ip === '::1';
+      }
     }
 
     return false;
@@ -103,7 +112,7 @@ export function isIPInRangeOrPrivate(
   options: {
     ranges?: string[] | string;
     allowAnyPrivate?: boolean;
-  } = { allowAnyPrivate: true },
+  } = { allowAnyPrivate: true }
 ) {
   if (options.allowAnyPrivate !== false && isPrivateIP(ip)) {
     return true;

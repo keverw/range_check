@@ -86,6 +86,7 @@ test('isPrivateIP', function () {
   expect(isPrivateIP('fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff')).toBeTruthy(); // Max ULA
   expect(isPrivateIP('fc00::1')).toBeTruthy(); // Min ULA
   expect(isPrivateIP('::1')).toBeTruthy(); // Loopback address
+  expect(isPrivateIP('::ffff:127.0.0.1')).toBeTruthy(); // IPv4-mapped address
   expect(isPrivateIP('fe80::1')).toBeFalsy(); // Link-local address (not considered private)
   expect(isPrivateIP('2001:db8::1')).toBeFalsy(); // Documentation prefix (not private)
   expect(isPrivateIP('2001::')).toBeFalsy(); // Global Unicast Address
@@ -106,35 +107,69 @@ test('isIPInRangeOrPrivate', function () {
   expect(isIPInRangeOrPrivate('8.8.8.8')).toBeFalsy();
 
   // Test with ranges
-  expect(isIPInRangeOrPrivate('8.8.8.8', { ranges: '8.8.8.0/24' })).toBeTruthy();
+  expect(
+    isIPInRangeOrPrivate('8.8.8.8', { ranges: '8.8.8.0/24' })
+  ).toBeTruthy();
   expect(isIPInRangeOrPrivate('8.8.4.4', { ranges: '8.8.8.0/24' })).toBeFalsy();
-  expect(isIPInRangeOrPrivate('192.168.1.1', { ranges: '8.8.8.0/24' })).toBeTruthy(); // Private IP still allowed
+  expect(
+    isIPInRangeOrPrivate('192.168.1.1', { ranges: '8.8.8.0/24' })
+  ).toBeTruthy(); // Private IP still allowed
 
   // Test with allowAnyPrivate set to false
-  expect(isIPInRangeOrPrivate('192.168.1.1', { allowAnyPrivate: false })).toBeFalsy();
-  expect(isIPInRangeOrPrivate('8.8.8.8', { allowAnyPrivate: false, ranges: '8.8.8.0/24' })).toBeTruthy();
-  expect(isIPInRangeOrPrivate('10.0.0.1', { allowAnyPrivate: false, ranges: '8.8.8.0/24' })).toBeFalsy();
+  expect(
+    isIPInRangeOrPrivate('192.168.1.1', { allowAnyPrivate: false })
+  ).toBeFalsy();
+  expect(
+    isIPInRangeOrPrivate('8.8.8.8', {
+      allowAnyPrivate: false,
+      ranges: '8.8.8.0/24',
+    })
+  ).toBeTruthy();
+  expect(
+    isIPInRangeOrPrivate('10.0.0.1', {
+      allowAnyPrivate: false,
+      ranges: '8.8.8.0/24',
+    })
+  ).toBeFalsy();
 
   // Test with IPv6
   expect(isIPInRangeOrPrivate('fd00::1')).toBeTruthy(); // ULA IPv6
-  expect(isIPInRangeOrPrivate('2001:db8::1', { ranges: '2001:db8::/32' })).toBeTruthy();
-  expect(isIPInRangeOrPrivate('2001:db8::1', { allowAnyPrivate: false, ranges: '2001:db8::/32' })).toBeTruthy();
+  expect(
+    isIPInRangeOrPrivate('2001:db8::1', { ranges: '2001:db8::/32' })
+  ).toBeTruthy();
+  expect(
+    isIPInRangeOrPrivate('2001:db8::1', {
+      allowAnyPrivate: false,
+      ranges: '2001:db8::/32',
+    })
+  ).toBeTruthy();
 
   // Test with multiple ranges
   expect(
-    isIPInRangeOrPrivate('172.20.0.1', { allowAnyPrivate: false, ranges: ['10.0.0.0/8', '172.20.0.0/16'] }),
+    isIPInRangeOrPrivate('172.20.0.1', {
+      allowAnyPrivate: false,
+      ranges: ['10.0.0.0/8', '172.20.0.0/16'],
+    })
   ).toBeTruthy();
 });
 
 test('storeIP', function () {
   expect(storeIP('foo')).toBeNull();
   expect(storeIP('::ffff:127.0.0.1')).toEqual('127.0.0.1');
-  expect(storeIP('2001:0000:0111:0000:0011:0000:0001:0000')).toEqual('2001:0:111:0:11:0:1:0');
-  expect(storeIP('2001:0001:0000:0001:0000:0000:0000:0000')).toEqual('2001:1:0:1::');
+  expect(storeIP('2001:0000:0111:0000:0011:0000:0001:0000')).toEqual(
+    '2001:0:111:0:11:0:1:0'
+  );
+  expect(storeIP('2001:0001:0000:0001:0000:0000:0000:0000')).toEqual(
+    '2001:1:0:1::'
+  );
   expect(storeIP('0000:0000:0000:0000:0000:0000:0000:0000')).toEqual('::');
   expect(storeIP('0000:0000:0000:0000:0000:0000:0000:0001')).toEqual('::1');
-  expect(storeIP('2041:0000:140F:0000:0000:0000:875B:131B')).toEqual('2041:0:140f::875b:131b');
-  expect(storeIP('2001:0001:0002:0003:0004:0005:0006:0007')).toEqual('2001:1:2:3:4:5:6:7');
+  expect(storeIP('2041:0000:140F:0000:0000:0000:875B:131B')).toEqual(
+    '2041:0:140f::875b:131b'
+  );
+  expect(storeIP('2001:0001:0002:0003:0004:0005:0006:0007')).toEqual(
+    '2001:1:2:3:4:5:6:7'
+  );
   expect(storeIP('127.0.0.1')).toEqual('127.0.0.1');
   expect(storeIP('::ffff:127.0.0.1')).toEqual(searchIP('::ffff:127.0.0.1'));
 
@@ -146,11 +181,19 @@ test('displayIP', function () {
   // @ts-ignore: displayIP only takes string, but testing if null is passed in
   expect(displayIP(null)).toEqual('');
   expect(displayIP('::ffff:127.0.0.1')).toEqual('127.0.0.1');
-  expect(displayIP('2001:0:111:0:11:0:1:0')).toEqual('2001:0000:0111:0000:0011:0000:0001:0000');
-  expect(displayIP('2001:1:0:1::')).toEqual('2001:0001:0000:0001:0000:0000:0000:0000');
+  expect(displayIP('2001:0:111:0:11:0:1:0')).toEqual(
+    '2001:0000:0111:0000:0011:0000:0001:0000'
+  );
+  expect(displayIP('2001:1:0:1::')).toEqual(
+    '2001:0001:0000:0001:0000:0000:0000:0000'
+  );
   expect(displayIP('::')).toEqual('0000:0000:0000:0000:0000:0000:0000:0000');
   expect(displayIP('::1')).toEqual('0000:0000:0000:0000:0000:0000:0000:0001');
-  expect(displayIP('2041:0:140F::875B:131B')).toEqual('2041:0000:140f:0000:0000:0000:875b:131b');
-  expect(displayIP('2001:1:2:3:4:5:6:7')).toEqual('2001:0001:0002:0003:0004:0005:0006:0007');
+  expect(displayIP('2041:0:140F::875B:131B')).toEqual(
+    '2041:0000:140f:0000:0000:0000:875b:131b'
+  );
+  expect(displayIP('2001:1:2:3:4:5:6:7')).toEqual(
+    '2001:0001:0002:0003:0004:0005:0006:0007'
+  );
   expect(displayIP('127.0.0.1')).toEqual('127.0.0.1');
 });

@@ -1,6 +1,6 @@
 {
   "name": "range_check",
-  "version": "3.2.0",
+  "version": "4.0.0",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -15,12 +15,15 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "start": "bun src/index.ts",
-    "build": "tsup",
+    "update-version": "bun scripts/update-version.ts",
+    "build": "bun run update-version && tsup",
     "prepublishOnly": "bun run build",
     "test": "bun test",
-    "format": "bun run biome format . --write"
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,md,html}\""
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "bun",
     "IP Address",
@@ -35,32 +38,31 @@
     "ipv6"
   ],
   "license": "BSD-2-Clause",
-  "homepage": "https://github.com/maxam2017/bun-lib-starter#readme",
- "repository": {
+  "homepage": "https://github.com/keverw/range_check#readme",
+  "repository": {
     "type": "git",
     "url": "https://github.com/keverw/range_check"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "bugs": "https://github.com/maxam2017/bun-lib-starter/issues",
+  "bugs": "https://github.com/keverw/range_check/issues",
   "author": "Kevin Whitman (https://github.com/keverw)",
   "dependencies": {
-    "ip6": "^0.2.10",
+    "ip6": "^0.2.11",
     "ipaddr.js": "^2.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.4.1",
     "@types/bun": "latest",
     "dts-bundle-generator": "^9.2.1",
+    "prettier": "^3.5.3",
     "semantic-release": "^22.0.12",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   },
   "release": {
-    "branches": ["main"]
-  },
-  "bun-create": {
-    "preinstall": "pre-commit install"
+    "branches": [
+      "main"
+    ]
   }
 }
