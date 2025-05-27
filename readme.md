@@ -272,17 +272,6 @@ console.log(displayIP('127.0.0.1')); //'127.0.0.1'
 
 ## Contributing
 
-This project is using this starter library [bun-lib-starter](https://github.com/maxam2017/bun-lib-starter/tree/main)
-Currently to use NPM to publish, must have that installed with Node, along side `Bun`
-
-```sh
-cd into the repo
-
-pre-commit install
-
-bun install
-```
-
 - `bun run test`: Run test suite
 - `bun run build`: Generate bundles and typings and updates README version
 - `bun run format`: Format source files, readme, etc
