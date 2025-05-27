@@ -134,7 +134,7 @@ export function storeIP(addr: string) {
       //is a plain v4 address
       return addr;
     } else if (kind === 'ipv6') {
-      //@ts-ignore:  it exists!
+      //@ts-ignore: it exists!
       if (parse_addr.isIPv4MappedAddress()) {
         //convert v4 mapped to v6 addresses to a v4 in it's original format
         //@ts-ignore:  it exists!
@@ -177,5 +177,94 @@ export function displayIP(addr: string) {
     }
   } catch (err) {
     return ''; //invalid IP address
+  }
+}
+
+/**
+ * Generates a consistent fingerprint for IP addresses that can be used for bot tracking
+ * - For IPv4: Uses the full address
+ * - For IPv6: Uses the /64 network prefix
+ *
+ * @param addr - The IP address to generate a fingerprint for
+ * @returns A string in the format 'v4:ADDRESS' or 'v6:PREFIX'
+ */
+
+export function IPFingerprint(addr: string): string {
+  const ver = version(addr);
+
+  if (ver === 4) {
+    // For IPv4, use the full address
+    return `v4:${addr}`;
+  } else if (ver === 6) {
+    try {
+      const parsedAddr = ipaddr.parse(addr);
+
+      if (parsedAddr.kind() === 'ipv6') {
+        // Check if this is an IPv4-mapped IPv6 address
+        // @ts-ignore: TypeScript doesn't know this method exists
+        if (
+          //@ts-ignore: it exists!
+          parsedAddr.isIPv4MappedAddress()
+        ) {
+          // Convert to IPv4 and use that instead
+          // @ts-ignore: TypeScript doesn't know this method exists
+          const ipv4Addr = parsedAddr.toIPv4Address().toString();
+          return `v4:${ipv4Addr}`;
+        }
+
+        // Regular IPv6 - use the /64 network prefix
+        // @ts-ignore: TypeScript doesn't know the ipv6 object has a parts property
+        const parts = parsedAddr.parts;
+        // Take only the first 4 parts (64 bits)
+        const prefix = parts
+          .slice(0, 4)
+          .map((part: number) => part.toString(16)) // Convert to hex
+          .join(':'); // Join with colons
+        return `v6:${prefix}::`;
+      }
+
+      throw new Error('Invalid IPv6 address');
+    } catch (err) {
+      throw new Error('Invalid IPv6 address');
+    }
+  } else {
+    throw new Error('Invalid IP address');
+  }
+}
+
+/**
+ * Asynchronously generates a hashed fingerprint for IP addresses using Web Crypto API
+ * This works in both browser and Node.js environments that support Web Crypto
+ *
+ * @param addr - The IP address to generate a fingerprint for
+ * @returns A Promise that resolves to a string in the format 'v4:HASH' or 'v6:HASH'
+ */
+
+export async function IPFingerprintHashed(addr: string): Promise<string> {
+  const fingerprint = IPFingerprint(addr);
+  const [prefix, ipPart] = fingerprint.split(':', 2); // Extract v4/v6 prefix and IP part
+
+  // Only hash the IP part without the prefix
+  // Use Web Crypto API which is available in modern browsers and Node.js
+  // Convert string to Uint8Array
+  const encoder = new TextEncoder();
+  const data = encoder.encode(ipPart); // Just hash the IP part, not the prefix
+
+  try {
+    // Use the SubtleCrypto API to create a SHA-256 hash
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+    // Convert the hash to a hex string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    // Return the fingerprint with original prefix
+    return `${prefix}:${hashHex}`;
+  } catch (error) {
+    throw new Error(
+      'Crypto functionality not available - hashing failed. Use the non-hashed version instead.'
+    );
   }
 }

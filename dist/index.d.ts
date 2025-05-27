@@ -12,5 +12,22 @@ declare function isIPInRangeOrPrivate(ip: string, options?: {
 declare function storeIP(addr: string): any;
 
 declare function displayIP(addr: string): any;
+/**
+ * Generates a consistent fingerprint for IP addresses that can be used for bot tracking
+ * - For IPv4: Uses the full address
+ * - For IPv6: Uses the /64 network prefix
+ *
+ * @param addr - The IP address to generate a fingerprint for
+ * @returns A string in the format 'v4:ADDRESS' or 'v6:PREFIX'
+ */
+declare function IPFingerprint(addr: string): string;
+/**
+ * Asynchronously generates a hashed fingerprint for IP addresses using Web Crypto API
+ * This works in both browser and Node.js environments that support Web Crypto
+ *
+ * @param addr - The IP address to generate a fingerprint for
+ * @returns A Promise that resolves to a string in the format 'v4:HASH' or 'v6:HASH'
+ */
+declare function IPFingerprintHashed(addr: string): Promise<string>;
 
-export { displayIP, inRange, isIP, isIPInRangeOrPrivate, isPrivateIP, isRange, isV4, isV6, storeIP as searchIP, storeIP, version };
+export { IPFingerprint, IPFingerprintHashed, displayIP, inRange, isIP, isIPInRangeOrPrivate, isPrivateIP, isRange, isV4, isV6, storeIP as searchIP, storeIP, version };

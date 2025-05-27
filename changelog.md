@@ -1,14 +1,13 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [Change Log](#change-log)
-  - [1.3.0 (Jul 23, 2016)](#130-jul-23-2016)
-  - [1.4.0 (Jul 23, 2016)](#140-jul-23-2016)
-  - [2.0.0 (June 30, 2020)](#200-june-30-2020)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # Change Log
+
+- [1.3.0 (Jul 23, 2016)](#130-jul-23-2016)
+- [1.4.0 (Jul 23, 2016)](#140-jul-23-2016)
+- [2.0.0 (June 30, 2020)](#200-june-30-2020)
+- [3.0.0 (June 27, 2024)](#300-june-27-2024)
+- [3.1.0 (July 18, 2024)](#310-july-18-2024)
+- [3.2.0 (July 18, 2024)](#320-july-18-2024)
+- [4.0.0 (May 17, 2025)](#400-may-17-2025)
+- [4.1.0 (May 26, 2025)](#410-may-26-2025)
 
 ## 1.3.0 (Jul 23, 2016)
 
@@ -55,3 +54,18 @@
 - Switched from Biome to Prettier for code formatting
 - Cleaned up leftover configuration from bun-lib-starter template
 - Fixed repository links in package.json
+
+# 4.1.0 (May 26, 2025)
+
+- Added `IPFingerprint` function for creating consistent fingerprints from IP addresses
+  - For IPv4: Uses the full address
+  - For IPv6: Uses only the /64 network prefix (first 4 segments)
+- Added `IPFingerprintHashed` asynchronous function that creates SHA-256 hashed fingerprints
+  - Uses Web Crypto API for cross-environment compatibility (browsers and Node.js/Bun)
+  - Only hashes the IP address part, not the type prefix
+- Both functions properly handle special cases:
+  - IPv4-mapped IPv6 addresses
+  - IPv6 ULA ranges (fd00::/8)
+  - Loopback addresses (::1)
+  - Documentation prefixes (2001:db8::/32)
+  - Global unicast addresses

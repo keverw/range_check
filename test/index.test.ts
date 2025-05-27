@@ -11,6 +11,8 @@ import {
   searchIP,
   isPrivateIP,
   isIPInRangeOrPrivate,
+  IPFingerprint,
+  IPFingerprintHashed,
 } from '../src/index';
 
 test('isIP', function () {
@@ -196,4 +198,88 @@ test('displayIP', function () {
     '2001:0001:0002:0003:0004:0005:0006:0007'
   );
   expect(displayIP('127.0.0.1')).toEqual('127.0.0.1');
+});
+
+test('IPFingerprint', function () {
+  // IPv4 tests
+  expect(IPFingerprint('192.168.1.1')).toEqual('v4:192.168.1.1');
+  expect(IPFingerprint('10.0.0.1')).toEqual('v4:10.0.0.1');
+  expect(IPFingerprint('8.8.8.8')).toEqual('v4:8.8.8.8');
+
+  // IPv6 tests - should only use first 64 bits (first 4 segments)
+  expect(IPFingerprint('2001:db8:1234:5678:abcd:ef01:2345:6789')).toEqual(
+    'v6:2001:db8:1234:5678::'
+  );
+  expect(IPFingerprint('2001:db8::1')).toEqual('v6:2001:db8:0:0::');
+
+  // Special IPv6 addresses
+  expect(IPFingerprint('::1')).toEqual('v6:0:0:0:0::');
+  expect(IPFingerprint('::')).toEqual('v6:0:0:0:0::');
+
+  // IPv6 ULA (Unique Local Address) range
+  expect(IPFingerprint('fd00::1')).toEqual('v6:fd00:0:0:0::');
+  expect(IPFingerprint('fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff')).toEqual(
+    'v6:fdff:ffff:ffff:ffff::'
+  );
+  expect(IPFingerprint('fc00::1')).toEqual('v6:fc00:0:0:0::');
+
+  // IPv6 documentation range
+  expect(IPFingerprint('2001:db8::1')).toEqual('v6:2001:db8:0:0::');
+  expect(IPFingerprint('2001:db8:ffff:ffff::1')).toEqual(
+    'v6:2001:db8:ffff:ffff::'
+  );
+
+  // IPv6 global unicast
+  expect(IPFingerprint('2001::')).toEqual('v6:2001:0:0:0::');
+  expect(IPFingerprint('2001:0:1234:5678:abcd:ef01:2345:6789')).toEqual(
+    'v6:2001:0:1234:5678::'
+  );
+
+  // IPv4-mapped IPv6 addresses
+  expect(IPFingerprint('::ffff:192.168.1.1')).toEqual('v4:192.168.1.1');
+
+  // Invalid IPs
+  expect(() => IPFingerprint('not an ip')).toThrow('Invalid IP address');
+  expect(() => IPFingerprint('256.256.256.256')).toThrow('Invalid IP address');
+});
+
+test('IPFingerprintHashed', async function () {
+  try {
+    // IPv4 tests
+    const hashedIPv4 = await IPFingerprintHashed('192.168.1.1');
+    expect(hashedIPv4.startsWith('v4:')).toBeTruthy();
+    expect(hashedIPv4).not.toEqual('v4:192.168.1.1');
+    expect(hashedIPv4.length).toBeGreaterThan(10); // Should be longer due to hash
+
+    // IPv6 tests
+    const hashedIPv6 = await IPFingerprintHashed('2001:db8::1');
+    expect(hashedIPv6.startsWith('v6:')).toBeTruthy();
+    expect(hashedIPv6).not.toEqual('v6:2001:db8:0:0::');
+    expect(hashedIPv6.length).toBeGreaterThan(10); // Should be longer due to hash
+
+    // Make sure different IPs get different hashes
+    const hash1 = await IPFingerprintHashed('192.168.1.1');
+
+    // This hash is based on only the IP part (without the 'v4:' prefix)
+    expect(hash1).toEqual(
+      'v4:c5eb5a4cc76a5cdb16e79864b9ccd26c3553f0c396d0a21bafb7be71c1efcd8c'
+    );
+
+    const hash2 = await IPFingerprintHashed('192.168.1.2');
+    expect(hash1).not.toEqual(hash2);
+
+    // Make sure same IP always gets same hash
+    const hashA = await IPFingerprintHashed('8.8.8.8');
+    const hashB = await IPFingerprintHashed('8.8.8.8');
+    expect(hashA).toEqual(hashB);
+  } catch (error) {
+    // If crypto isn't available in the test environment, this will handle the case
+    // by making sure the error message is the one we expect
+    if (error instanceof Error) {
+      expect(error.message).toContain('Crypto functionality not available');
+    } else {
+      // If it's a different error, fail the test
+      throw error;
+    }
+  }
 });

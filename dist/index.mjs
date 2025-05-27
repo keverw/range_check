@@ -132,7 +132,52 @@ function displayIP(addr) {
     return "";
   }
 }
+function IPFingerprint(addr) {
+  const ver = version(addr);
+  if (ver === 4) {
+    return `v4:${addr}`;
+  } else if (ver === 6) {
+    try {
+      const parsedAddr = ipaddr.parse(addr);
+      if (parsedAddr.kind() === "ipv6") {
+        if (
+          //@ts-ignore: it exists!
+          parsedAddr.isIPv4MappedAddress()
+        ) {
+          const ipv4Addr = parsedAddr.toIPv4Address().toString();
+          return `v4:${ipv4Addr}`;
+        }
+        const parts = parsedAddr.parts;
+        const prefix = parts.slice(0, 4).map((part) => part.toString(16)).join(":");
+        return `v6:${prefix}::`;
+      }
+      throw new Error("Invalid IPv6 address");
+    } catch (err) {
+      throw new Error("Invalid IPv6 address");
+    }
+  } else {
+    throw new Error("Invalid IP address");
+  }
+}
+async function IPFingerprintHashed(addr) {
+  const fingerprint = IPFingerprint(addr);
+  const [prefix, ipPart] = fingerprint.split(":", 2);
+  const encoder = new TextEncoder();
+  const data = encoder.encode(ipPart);
+  try {
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    return `${prefix}:${hashHex}`;
+  } catch (error) {
+    throw new Error(
+      "Crypto functionality not available - hashing failed. Use the non-hashed version instead."
+    );
+  }
+}
 export {
+  IPFingerprint,
+  IPFingerprintHashed,
   displayIP,
   inRange,
   isIP,

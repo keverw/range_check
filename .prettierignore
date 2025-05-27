@@ -1,0 +1,10 @@
+# Ignore built and generated files
+dist/
+node_modules/
+coverage/
+
+# Ignore specific files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb

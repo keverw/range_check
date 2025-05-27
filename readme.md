@@ -1,4 +1,4 @@
-# Range Check v4.0.0
+# Range Check v4.1.0
 
 [![npm version](https://badge.fury.io/js/range_check.svg)](https://badge.fury.io/js/range_check) &nbsp; [![Build Status](https://travis-ci.org/keverw/range_check.svg?branch=master)](https://travis-ci.org/keverw/range_check)
 
@@ -20,6 +20,7 @@ This started out as `range_check` but it does much more than just checking range
   - [Check if IP is within range](#check-if-ip-is-within-range)
   - [Check if IP is private](#check-if-ip-is-private)
   - [Check if IP is in range or private](#check-if-ip-is-in-range-or-private)
+  - [IP Fingerprinting](#ip-fingerprinting)
   - [storeIP](#storeip)
   - [searchIP](#searchip)
   - [displayIP](#displayip)
@@ -139,6 +140,95 @@ Options:
 If no options are provided, the function will return true for any private IP and false for public IPs.
 
 Use case example: This function can be used in server configurations to easily allow local calls or calls from specific IP ranges, while blocking others. For instance, it can be used in middleware for setting trace IDs. This allows you to automatically set trace IDs for requests from private networks or specific IP ranges, which can be useful for debugging and tracking requests across microservices in a distributed system.
+
+### IP Fingerprinting
+
+The package provides two functions for generating IP address fingerprints:
+
+#### Synchronous (unhashed) version
+
+```typescript
+console.log(IPFingerprint('192.168.1.1')); // 'v4:192.168.1.1'
+console.log(IPFingerprint('2001:db8::1')); // 'v6:2001:db8:0:0::'
+```
+
+This function generates a consistent fingerprint for IP addresses that can be used for bot tracking and analytics:
+
+- For IPv4 addresses: Uses the full address
+- For IPv6 addresses: Uses only the /64 network prefix (first 4 segments)
+
+The function returns a string in the format `v4:ADDRESS` for IPv4 addresses or `v6:PREFIX::` for IPv6 addresses.
+
+#### Asynchronous (hashed) version
+
+```typescript
+// Using async/await
+const hashedFingerprint = await IPFingerprintHashed('192.168.1.1');
+console.log(hashedFingerprint); // 'v4:a1e2f3...' (SHA-256 hash)
+
+// Using Promises
+IPFingerprintHashed('2001:db8::1')
+  .then((fingerprint) => console.log(fingerprint)) // 'v6:a1e2f3...' (SHA-256 hash)
+  .catch((error) => console.error(error));
+```
+
+This asynchronous function generates a hashed fingerprint using the Web Crypto API, which works in both modern browsers and Node.js/Bun environments. It applies a SHA-256 hash to the IP address part only (without the prefix) and then combines it with the original prefix. This means the format is still `v4:HASH` or `v6:HASH`, but only the actual IP address or subnet is used in the hash calculation.
+
+Important: If the Web Crypto API is not available in the environment, this function will throw an error rather than silently falling back to an unhashed fingerprint. This ensures you're aware when the hashing functionality isn't working as expected.
+
+#### Use cases
+
+The IP fingerprinting functions are designed to address several common challenges in web applications:
+
+##### 1. Signup Rate Limiting and Abuse Prevention
+
+```typescript
+// Example: Rate limiting signups from the same network
+const ipKey = await IPFingerprintHashed(userIP);
+
+// Use the fingerprint as a key in your rate limiting system
+// This allows tracking signup attempts per network without storing actual IPs
+if (tooManySignups(ipKey)) {
+  throw new Error('Too many signup attempts from your network');
+}
+```
+
+This approach effectively prevents mass signup abuse while respecting privacy. For IPv6 users, it only considers the /64 network prefix, which represents a single household or organization.
+
+##### 2. Content View Limiting
+
+```typescript
+// Example: Limiting free article views for users from the same network
+const viewKey = IPFingerprint(visitorIP); // Unhashed is fine for this use case
+
+// Track views using the fingerprint as identifier
+if (viewCountExceeded(articleId, viewKey)) {
+  showPaywall();
+}
+```
+
+This creates a persistent identifier for content views without storing the actual IP address.
+
+##### 3. Bot Detection and Security
+
+```typescript
+// Example: Track failed login attempts without storing raw IPs
+const hashedIp = await IPFingerprintHashed(clientIP);
+
+// Track repeated failures from the same network
+if (failedAttemptsExceeded(hashedIp)) {
+  // Require CAPTCHA or temporarily block
+  requireCaptcha();
+}
+```
+
+#### Technical Considerations
+
+The functions handle IPv6 addresses appropriately by using the /64 prefix. According to [RFC 7421](https://datatracker.ietf.org/doc/html/rfc7421), the IPv6 addressing architecture uses a fixed boundary between the network prefix and the interface identifier at the /64 boundary. This standard reflects how IPv6 networks are deployed, with a /64 prefix typically representing a single subnet that might correspond to a household, small business, or organizational network.
+
+This implementation aligns with privacy best practices described in [RFC 8981](https://datatracker.ietf.org/doc/html/rfc8981), which discusses temporary address extensions for IPv6. While individual devices within a network might use temporary addresses that change over time (to prevent tracking of specific devices), the network prefix (/64) typically remains stable for a given network.
+
+The hashed version adds an extra layer of privacy by making it impossible to reverse-engineer the original IP address from the fingerprint, which is particularly important for compliance with privacy regulations while still allowing effective rate limiting.
 
 ### storeIP
 
